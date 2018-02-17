@@ -1,5 +1,4 @@
-(ns lww-element-set.core
-  (:gen-class))
+(ns lww-element-set.core)
 
 (def delta (atom 0))
 
@@ -82,6 +81,3 @@
                       (added? add-time))))
        (map first)
        (into #{})))
-
-(defn -main [& args]
-  (println "Run test with 'lein test' command"))
