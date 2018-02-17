@@ -38,12 +38,12 @@
                          :del-set
                          (map (fn [[e t]]
                                 (let [t (format-time t)]
-                                  (str t ": deleted " e)))))
+                                  (str t ": deleted '" e "'")))))
             adds    (->> @replica
                          :add-set
                          (map (fn [[e t]]
                                 (let [t (format-time t)]
-                                  (str t ": added " e)))))
+                                  (str t ": added '" e "'")))))
             entries (concat dels adds)]
         [:td
          [:div {:style {:margin    :auto
