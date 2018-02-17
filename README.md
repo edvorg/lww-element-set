@@ -6,7 +6,7 @@
 
 ## Live Demo!
 
-[Live Demo](https://edvorg.github.io/lww-element-set/resources/public/index.html) with three Read-Write replicas and Read-Only merge replica.
+[Live Demo](https://edvorg.github.io/lww-element-set/resources/public/index.html) with three Read-Write replicas and Read-Only merge replica. For demo purposes library is cross-compiled into javascript and used as is on frontend [web page code](https://github.com/edvorg/lww-element-set/blob/gh-pages/src/lww_element_set/web.cljs).
 
 ## Prerequisites
 
