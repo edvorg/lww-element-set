@@ -1,6 +1,13 @@
 (ns lww-element-set.web
   (:require [reagent.core :as reagent :refer [atom cursor]]
-            [lww-element-set.core :as core]))
+            [lww-element-set.core :as core]
+            [cljs-time.coerce :as tc]
+            [cljs-time.format :as tf]))
+
+(def formatter (tf/formatter "HH:mm:ss.SSS"))
+
+(defn format-time [t]
+  (tf/unparse formatter (tc/from-long t)))
 
 (enable-console-print!)
 
@@ -30,11 +37,13 @@
       (let [dels    (->> @replica
                          :del-set
                          (map (fn [[e t]]
-                                (str t ": deleted " e))))
+                                (let [t (format-time t)]
+                                  (str t ": deleted " e)))))
             adds    (->> @replica
                          :add-set
                          (map (fn [[e t]]
-                                (str t ": added " e))))
+                                (let [t (format-time t)]
+                                  (str t ": added " e)))))
             entries (concat dels adds)]
         [:td
          [:div {:style {:margin    :auto
