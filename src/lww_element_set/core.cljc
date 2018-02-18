@@ -36,10 +36,19 @@
        (or (not del-time)
            (< del-time add-time))))
 
+(defn- select-element
+  "Keep replica data only related to signle element"
+  [element {:keys [add-set del-set]}]
+  {:add-set (select-keys add-set [element])
+   :del-set (select-keys del-set [element])})
+
 (defn member?
   "Lookup element in lww-element-set."
-  [element replica]
-  (let [add-time (get-in replica [:add-set element])
+  [element & replicas]
+  (let [replica (->> replicas
+                     (map (partial select-element element))
+                     (apply merge-replicas))
+        add-time (get-in replica [:add-set element])
         del-time (get-in replica [:del-set element])]
     (added? add-time del-time))) ;; biased towards removal
 
