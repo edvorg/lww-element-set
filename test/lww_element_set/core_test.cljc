@@ -18,6 +18,22 @@
       (is del-value "value shouldn't be nill")
       (is (integer? del-value) "value should be integer"))))
 
+(deftest added?-test
+  (testing "No add timestamp result in false"
+    (is (not (added? nil (now)))))
+  (testing "No del timestamp result in true"
+    (is (added? (now) nil)))
+  (testing "No timestamps result in false"
+    (is (not (added? nil nil))))
+  (testing "add timestamp after del timestamp result in true"
+    (let [t1 (now)
+          t2 (now)]
+      (is (added? t2 t1))))
+  (testing "del timestamp after add timestamp result in false"
+    (let [t1 (now)
+          t2 (now)]
+      (is (not (added? t1 t2))))))
+
 (deftest member?-test
   (testing "empty replica shouldn't contain anything"
     (is (not (member? (make-replica)
@@ -79,3 +95,32 @@
                        (add 1))
           replica  (merge-replicas replica1 replica2 replica3)]
       (is (member? replica 1) "Should be in merged replica"))))
+
+(deftest members-test
+  (testing "adding several elements to replica put all those elements in set"
+    (let [replica (-> (make-replica)
+                      (add 1)
+                      (add 2)
+                      (add 3)
+                      (add 4))]
+      (is (= #{1 2 3 4} (members replica)))))
+  (testing "adding several elements and removing them result in empty set"
+    (let [replica (-> (make-replica)
+                      (add 1)
+                      (del 1)
+                      (add 2)
+                      (add 3)
+                      (del 2)
+                      (add 4)
+                      (del 3)
+                      (del 4))]
+      (is (= #{} (members replica)))))
+  (testing "adding several elements and removing some of them result in set without removed elements"
+    (let [replica (-> (make-replica)
+                      (add 1)
+                      (add 2)
+                      (add 3)
+                      (del 2)
+                      (add 4)
+                      (del 3))]
+      (is (= #{1 4} (members replica))))))

@@ -29,14 +29,29 @@
   [replica element]
   (update replica :del-set assoc element (now)))
 
+(defn added?
+  "Judging by add timestamp and del timestamp tell whether element is in the set."
+  [add-time del-time]
+  (and add-time
+       (or (not del-time)
+           (< del-time add-time))))
+
 (defn member?
   "Lookup element in lww-element-set."
   [replica element]
   (let [add-time (get-in replica [:add-set element])
         del-time (get-in replica [:del-set element])]
-    (and add-time
-         (or (not del-time)
-             (< del-time add-time))))) ;; biased towards removal
+    (added? add-time del-time))) ;; biased towards removal
+
+(defn members
+  "Get all members of the set"
+  [{:keys [add-set del-set] :as replica}]
+  (->> add-set
+       (filter (fn [[element add-time]]
+                 (->> (get del-set element)
+                      (added? add-time))))
+       (map first)
+       (into #{})))
 
 (defn- merge-sets
   "Merge maps (x -> timestamp) keeping latest timestamps."
