@@ -34,7 +34,7 @@ To remove element from replica `(lww-element-set.core/del replica element)`.
 
 To merge replicas `(lww-element-set.core/merge-replicas replica1 replica2 replica3 ...)`.
 
-To lookup element `(lww-element-set.core/member? element replica)`.
+To lookup element `(lww-element-set.core/member? element replica1 replica2 replica3 ...)`.
 
 ## License
 
