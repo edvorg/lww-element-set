@@ -49,14 +49,20 @@
          [:div {:style {:margin    :auto
                         :display   :block
                         :max-width "200px"}}
+          [:div "log:"]
           (for [entry (sort entries)]
             ^{:key entry}
             [:div
              entry])
+          [:div "elements:"]
+          (for [element (core/members @replica)]
+            ^{:key element}
+            [:div element " "])
           [:input {:type      :text
                    :value     @input-value
                    :on-change (fn [event]
                                 (reset! input-value (.. event -target -value)))}]
+          [:div "controls:"]
           (when modifiable
             [:button {:on-click (fn [_]
                                   (when (seq @input-value)
