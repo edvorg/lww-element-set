@@ -42,26 +42,6 @@
   {:add-set (select-keys add-set [element])
    :del-set (select-keys del-set [element])})
 
-(defn member?
-  "Lookup element in lww-element-set."
-  [element & replicas]
-  (let [replica (->> replicas
-                     (map (partial select-element element))
-                     (apply merge-replicas))
-        add-time (get-in replica [:add-set element])
-        del-time (get-in replica [:del-set element])]
-    (added? add-time del-time))) ;; biased towards removal
-
-(defn members
-  "Get all members of the set"
-  [{:keys [add-set del-set] :as replica}]
-  (->> add-set
-       (filter (fn [[element add-time]]
-                 (->> (get del-set element)
-                      (added? add-time))))
-       (map first)
-       (into #{})))
-
 (defn- merge-sets
   "Merge maps (x -> timestamp) keeping latest timestamps."
   [& sets]
@@ -82,6 +62,26 @@
                      (map :del-set)
                      (reduce merge-sets {}))]
     (make-replica add-set del-set)))
+
+(defn member?
+  "Lookup element in lww-element-set."
+  [element & replicas]
+  (let [replica (->> replicas
+                     (map (partial select-element element))
+                     (apply merge-replicas))
+        add-time (get-in replica [:add-set element])
+        del-time (get-in replica [:del-set element])]
+    (added? add-time del-time))) ;; biased towards removal
+
+(defn members
+  "Get all members of the set"
+  [{:keys [add-set del-set] :as replica}]
+  (->> add-set
+       (filter (fn [[element add-time]]
+                 (->> (get del-set element)
+                      (added? add-time))))
+       (map first)
+       (into #{})))
 
 (defn -main [& args]
   (println "Run test with 'lein test' command"))
