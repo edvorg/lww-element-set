@@ -38,7 +38,7 @@
 
 (defn member?
   "Lookup element in lww-element-set."
-  [replica element]
+  [element replica]
   (let [add-time (get-in replica [:add-set element])
         del-time (get-in replica [:del-set element])]
     (added? add-time del-time))) ;; biased towards removal

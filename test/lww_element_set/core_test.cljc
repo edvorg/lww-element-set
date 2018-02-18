@@ -36,39 +36,38 @@
 
 (deftest member?-test
   (testing "empty replica shouldn't contain anything"
-    (is (not (member? (make-replica)
-                      (rand)))
+    (is (not (member? (rand) (make-replica)))
         "value shodn't be member of replica"))
   (testing "add element to replica"
     (let [replica (-> (make-replica)
                       (add 1))]
-      (is (member? replica 1)
+      (is (member? 1 replica)
           "value should be a member of replica")))
   (testing "remove and add element to replica"
     (let [replica (-> (make-replica)
                       (del 1)
                       (add 1))]
-      (is (member? replica 1)
+      (is (member? 1 replica)
           "value should be a member of replica")))
   (testing "add and remove element to replica"
     (let [replica (-> (make-replica)
                       (add 1)
                       (del 1))]
-      (is (not (member? replica 1))
+      (is (not (member? 1 replica))
           "value should not be a member of replica")))
   (testing "add, remove and add again element to replica"
     (let [replica (-> (make-replica)
                       (add 1)
                       (del 1)
                       (add 1))]
-      (is (member? replica 1)
+      (is (member? 1 replica)
           "value should be a member of replica")))
   (testing "remove, add and remove element from replica"
     (let [replica (-> (make-replica)
                       (del 1)
                       (add 1)
                       (del 1))]
-      (is (not (member? replica 1))
+      (is (not (member? 1 replica))
           "value should not be a member of replica"))))
 
 (deftest merge-replicas-test
@@ -78,14 +77,14 @@
           replica2 (-> (make-replica)
                        (del 1))
           replica  (merge-replicas replica1 replica2)]
-      (is (not (member? replica 1)) "Should not be in merged replica")))
+      (is (not (member? 1 replica)) "Should not be in merged replica")))
   (testing "remove from first replica, add to second replica"
     (let [replica1 (-> (make-replica)
                        (del 1))
           replica2 (-> (make-replica)
                        (add 1))
           replica  (merge-replicas replica1 replica2)]
-      (is (member? replica 1) "Should be in merged replica")))
+      (is (member? 1 replica) "Should be in merged replica")))
   (testing "add to first replica, remove from second replica, add to third replica"
     (let [replica1 (-> (make-replica)
                        (add 1))
@@ -94,7 +93,7 @@
           replica3 (-> (make-replica)
                        (add 1))
           replica  (merge-replicas replica1 replica2 replica3)]
-      (is (member? replica 1) "Should be in merged replica"))))
+      (is (member? 1 replica) "Should be in merged replica"))))
 
 (deftest members-test
   (testing "adding several elements to replica put all those elements in set"
