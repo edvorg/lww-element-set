@@ -72,7 +72,7 @@
           [:button {:on-click (fn [_]
                                 (js/alert (str "Element "
                                                @input-value
-                                               (if (core/member? @replica @input-value)
+                                               (if (core/member? @input-value @replica)
                                                  " exist"
                                                  " does not exist"))))}
            "query"]]]))))
