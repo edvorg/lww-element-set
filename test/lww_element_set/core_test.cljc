@@ -2,6 +2,22 @@
   (:require [clojure.test :refer :all]
             [lww-element-set.core :refer :all]))
 
+(def delta (atom 0))
+
+(defn now-with-offset
+  "Returns mulliseconds since unix epoch + delta that's increasing by 1 every time.
+  Guarantees than one call to now after anoter will return greater value."
+  []
+  (swap! delta inc) ;; 1 ms
+  #?(:clj (+ (.getTime (java.util.Date.)) @delta)
+     :cljs (+ (.getTime (js/Date.)) @delta)))
+
+(defn now-fixture [f]
+  (with-redefs [lww-element-set.core/now #(now-with-offset)]
+    (f)))
+
+(use-fixtures :each now-fixture)
+
 (deftest add-test
   (testing "Should add value to add-set"
     (let [replica   (-> (make-replica)

@@ -1,14 +1,11 @@
 (ns lww-element-set.core)
 
-(def delta (atom 0))
-
 (defn now
   "Returns mulliseconds since unix epoch + delta that's increasing by 1 every time.
   Guarantees than one call to now after anoter will return greater value."
   []
-  (swap! delta inc) ;; 1 ms
-  #?(:clj (+ (.getTime (java.util.Date.)) @delta)
-     :cljs (+ (.getTime (js/Date.)) @delta)))
+  #?(:clj (.getTime (java.util.Date.))
+     :cljs (.getTime (js/Date.))))
 
 (defn make-replica
   "Create new lww-element-set replica."
